@@ -1,0 +1,66 @@
+---------------------------------------------------------
+-- FARMEX TRACKER - DATABASE SETUP
+---------------------------------------------------------
+
+-- Create database
+CREATE DATABASE farmex;
+USE farmex;
+
+---------------------------------------------------------
+-- USERS TABLE
+-- Email = Primary Key
+-- Username = Unique
+---------------------------------------------------------
+CREATE TABLE users (
+    email VARCHAR(100) PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+---------------------------------------------------------
+-- CROPS TABLE
+-- Stores each crop with area and season
+---------------------------------------------------------
+CREATE TABLE crops (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    area DECIMAL(10,2) NOT NULL,
+    season VARCHAR(50),
+    user_id VARCHAR(100) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(email)
+);
+
+---------------------------------------------------------
+-- EXPENSES TABLE
+-- Tracks all expenses for each crop
+---------------------------------------------------------
+CREATE TABLE expenses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    crop_id INT NOT NULL,
+    date DATE NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    note TEXT,
+    user_id VARCHAR(100) NOT NULL,
+    FOREIGN KEY (crop_id) REFERENCES crops(id),
+    FOREIGN KEY (user_id) REFERENCES users(email)
+);
+
+---------------------------------------------------------
+-- INCOME TABLE
+-- Records harvest income, buyer details, price, etc.
+---------------------------------------------------------
+CREATE TABLE income (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    crop_id INT NOT NULL,
+    date DATE NOT NULL,
+    quantity DECIMAL(10,2),
+    unit VARCHAR(20),
+    rate DECIMAL(10,2),
+    amount DECIMAL(10,2) NOT NULL,
+    buyer VARCHAR(100),
+    note TEXT,
+    user_id VARCHAR(100) NOT NULL,
+    FOREIGN KEY (crop_id) REFERENCES crops(id),
+    FOREIGN KEY (user_id) REFERENCES users(email)
+);
